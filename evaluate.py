@@ -1,3 +1,5 @@
+"""Minimal evaluation harness for restored HRM checkpoints."""
+
 from typing import List
 import yaml
 import os
@@ -11,12 +13,16 @@ from pretrain import PretrainConfig, init_train_state, evaluate, create_dataload
 
 
 class EvalConfig(pydantic.BaseModel):
+    """Declarative schema for user-provided evaluation parameters."""
+
     checkpoint: str
-    
+
     save_outputs: List[str] = ["inputs", "labels", "puzzle_identifiers", "logits", "q_halt_logits", "q_continue_logits"]
 
 
-def launch():
+def launch() -> None:
+    """Restore a checkpoint, build loaders, and run evaluation metrics."""
+
     eval_cfg = EvalConfig(**OmegaConf.to_container(OmegaConf.from_cli()))  # type: ignore
     
     RANK = 0
